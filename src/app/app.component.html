@@ -1,11 +1,3 @@
 <div>
-  <app-publications-table></app-publications-table>
-  <mat-form-field>
-    <mat-label>Topic</mat-label>
-    <mat-select>
-      <mat-option>Angular</mat-option>
-      <mat-option>React</mat-option>
-      <mat-option>Vue</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <app-publications-table [publications]="publications"></app-publications-table>
 </div>

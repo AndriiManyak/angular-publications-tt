@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { parsedPublications } from '../api/api.js';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'angular-smida-tt';
+  publications = [];
+
+  ngOnInit(): void {
+    this.publications = parsedPublications;
+  }
 }
