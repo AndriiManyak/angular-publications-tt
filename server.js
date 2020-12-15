@@ -1,21 +1,8 @@
-const API_URL = 'http://localhost:5000/api/publications'
+const express = require('express');
+const app = express();
+const port = 5000;
 
-export const getData = async () => {
-  const response = await fetch(API_URL);
-  const data = await response.json();
-
-  return data;
-}
-
-export const removePublication = async (publicationId) => {
-  const response = await fetch(`${API_URL}/${publicationId}`, {
-    method: 'DELETE',
-  })
-
-  return response.json();
-}
-
-const publications = [
+let publications = [
   {
     "idReport": 20,
     "idSubject": 21,
@@ -106,13 +93,27 @@ const publications = [
   }
 ]
 
-export const parsedPublications = publications
-  .map(publication => ({
-    publicationType: publication.publicationType,
-    termType: publication.termType,
-    reportGroup: publication.reportGroup,
-    reportState: publication.reportState,
-    reportFormat: publication.reportFormat,
-    outputDate: publication.outputDate.date,
-    outputNumber: publication.outputNumber,
-  }))
+app.use((req, res, next) => {
+  res.set('Access-Control-Allow-Origin', 'http://localhost:4200');
+  res.set('Access-Control-Allow-Methods', 'DELETE');
+  next();
+});
+
+app.get('/api/publications', (req, res) => {
+    res.json(publications);
+  }
+)
+
+app.delete('/api/publications/:publicationId', (req, res) => {
+  publications = publications.filter(publication => (
+    publication.idReport !== parseInt(req.params.publicationId)
+  ))
+
+  res.json({status: 'success'})
+})
+
+
+
+app.listen(port, () => {
+  console.log('started');
+})
