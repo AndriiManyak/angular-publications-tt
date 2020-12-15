@@ -13,6 +13,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     PublicationsTableComponent,
   ],
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -31,6 +34,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatInputModule,
     MatNativeDateModule,
     MatDatepickerModule,
+    MatButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

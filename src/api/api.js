@@ -1,4 +1,21 @@
-export const publications = [
+const API_URL = 'http://localhost:5000/api/publications'
+
+export const getData = async () => {
+  const response = await fetch(API_URL);
+  const data = await response.json();
+
+  return data;
+}
+
+export const removePublication = async (publicationId) => {
+  const response = await fetch(`${API_URL}/${publicationId}`, {
+    method: 'DELETE',
+  })
+
+  return response.json();
+}
+
+const publications = [
   {
     "idReport": 20,
     "idSubject": 21,

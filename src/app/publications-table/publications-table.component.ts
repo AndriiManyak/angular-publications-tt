@@ -2,6 +2,7 @@ import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/cor
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { getData, removePublication } from '../../api/api.js';
 
 export interface PublicationsTableItem {
   publicationType: string,
@@ -11,6 +12,7 @@ export interface PublicationsTableItem {
   reportFormat: string,
   outputDate: string,
   outputNumber: string,
+  idReport: number,
 }
 
 @Component({
@@ -18,8 +20,8 @@ export interface PublicationsTableItem {
   templateUrl: './publications-table.component.html',
   styleUrls: ['./publications-table.component.scss']
 })
-export class PublicationsTableComponent implements AfterViewInit, OnInit {
-  @Input() publications: PublicationsTableItem[];
+export class PublicationsTableComponent implements OnInit, AfterViewInit {
+  publications: PublicationsTableItem[] = [];
   dataSource;
 
   publicationTypes: string[] = [];
@@ -36,7 +38,7 @@ export class PublicationsTableComponent implements AfterViewInit, OnInit {
     'reportFormat',
     'outputDate',
     'outputNumber',
-    'delete'
+    'idReport'
   ];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -50,9 +52,11 @@ export class PublicationsTableComponent implements AfterViewInit, OnInit {
   public selectedReportStates = '';
   public selectedReportFormats = '';
 
-  ngOnInit() {
+  async ngOnInit() {
     this.dataSource = new MatTableDataSource<PublicationsTableItem>(this.publications);
     this.dataSource.paginator = this.paginator;
+
+    await this.setPublications();
 
     this.searchFormInit();
     this.dataSource.filterPredicate = this.getFilterPredicate();
@@ -61,6 +65,30 @@ export class PublicationsTableComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
+
+  }
+
+  async setPublications() {
+    const publicationsFromServer = await getData();
+    const parsedPublications = publicationsFromServer
+      .map(publication => ({
+        publicationType: publication.publicationType,
+        termType: publication.termType,
+        reportGroup: publication.reportGroup,
+        reportState: publication.reportState,
+        reportFormat: publication.reportFormat,
+        outputDate: publication.outputDate.date,
+        outputNumber: publication.outputNumber,
+        idReport: publication.idReport,
+      }))
+
+    this.publications = parsedPublications;
+    this.dataSource.data = this.publications;
+  }
+
+  async deletePublication(publicationId) {
+    await removePublication(publicationId);
+    await this.setPublications();
   }
 
   searchFormInit() {
@@ -196,8 +224,6 @@ export class PublicationsTableComponent implements AfterViewInit, OnInit {
   }
 
   getPublicationsData() {
-    this.dataSource.data = this.publications;
-
     for(let publication of this.publications) {
       if(!this.publicationTypes.includes(publication.publicationType)) {
         this.publicationTypes.push(publication.publicationType);

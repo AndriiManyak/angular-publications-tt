@@ -1,15 +1,12 @@
-import { Component } from '@angular/core';
-import { parsedPublications } from '../api/api.js';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  publications = [];
+export class AppComponent implements OnInit {
 
   ngOnInit(): void {
-    this.publications = parsedPublications;
   }
 }
